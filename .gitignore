@@ -1,0 +1,23 @@
+# Terraform working directory
+**/.terraform/*
+
+# Local .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Terraform transient state lock
+*.tfstate.lock.info
+
+# Variable files may contain sensitive data, so ignore them
+*.tfvars
+*.tfvars.json
+
+# local override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform crash log files
+crash.log
+crash.*.log
