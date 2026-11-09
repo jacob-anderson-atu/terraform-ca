@@ -21,3 +21,7 @@ override.tf.json
 # Terraform crash log files
 crash.log
 crash.*.log
+
+# Local environment files
+.env
+.env.*

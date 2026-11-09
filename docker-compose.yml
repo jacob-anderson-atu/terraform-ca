@@ -1,0 +1,18 @@
+services:
+  localstack:
+    container_name: terraform-sentinel-localstack
+    image: localstack/localstack:latest
+    ports:
+      - "127.0.0.1:4566:4566"
+    environment:
+      - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN}
+      - DEBUG=1
+      - PERSISTENCE=1
+      - AWS_DEFAULT_REGION=eu-west-1
+    volumes:
+      - localstack-data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  localstack-data:
+    driver: local
