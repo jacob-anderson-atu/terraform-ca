@@ -83,7 +83,7 @@ resource "aws_instance" "web_01" {
   ami             = "ami-0c55b159cbfafe1f0" # Amazon Linux 2 AMI
   instance_type   = var.instance_type
   subnet_id       = aws_subnet.main.id
-  security_groups = [aws_security_group.web.name]
+  security_groups = [aws_security_group.web.id]
 
   #root_block_device {
     #encrypted   = true
@@ -106,7 +106,7 @@ resource "aws_instance" "web_02" {
   ami             = "ami-0c55b159cbfafe1f0" # Amazon Linux 2 AMI
   instance_type   = var.instance_type
   subnet_id       = aws_subnet.main.id
-  security_groups = [aws_security_group.web.name]
+  security_groups = [aws_security_group.web.id]
 
   #root_block_device {
     #encrypted   = true
