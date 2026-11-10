@@ -88,7 +88,6 @@ planned_values = {
 				"root_block_device": [
 					{
 						"delete_on_termination": true,
-						"encrypted":             true,
 						"tags":                  null,
 						"volume_size":           10,
 						"volume_type":           "gp3",
@@ -128,13 +127,13 @@ planned_values = {
 				"force_destroy":        false,
 				"get_password_data":    false,
 				"hibernation":          null,
-				"instance_type":        "t3.micro",
+				"instance_type":        "t3.large",
 				"launch_template":      [],
 				"metadata_options": [
 					{
 						"http_endpoint":      "enabled",
 						"http_protocol_ipv6": "disabled",
-						"http_tokens":        "required",
+						"http_tokens":        "optional",
 					},
 				],
 				"region": "eu-west-1",
@@ -195,16 +194,16 @@ planned_values = {
 				"ingress": [
 					{
 						"cidr_blocks": [
-							"10.0.0.0/16",
+							"0.0.0.0/0",
 						],
-						"description":      "HTTPS",
-						"from_port":        443,
+						"description":      "All traffic",
+						"from_port":        0,
 						"ipv6_cidr_blocks": [],
 						"prefix_list_ids":  [],
-						"protocol":         "tcp",
+						"protocol":         "-1",
 						"security_groups":  [],
 						"self":             false,
-						"to_port":          443,
+						"to_port":          0,
 					},
 				],
 				"name":                   "sentinel-web-sg",
@@ -236,7 +235,7 @@ planned_values = {
 			"type":           "aws_subnet",
 			"values": {
 				"assign_ipv6_address_on_creation":                false,
-				"availability_zone":                              "eu-west-1a",
+				"availability_zone":                              "us-east-1a",
 				"cidr_block":                                     "10.0.1.0/24",
 				"customer_owned_ipv4_pool":                       null,
 				"enable_dns64":                                   false,
@@ -391,7 +390,6 @@ resource_changes = {
 				"root_block_device": [
 					{
 						"delete_on_termination": true,
-						"encrypted":             true,
 						"tags":                  null,
 						"volume_size":           10,
 						"volume_type":           "gp3",
@@ -463,6 +461,7 @@ resource_changes = {
 				"root_block_device": [
 					{
 						"device_name": true,
+						"encrypted":   true,
 						"iops":        true,
 						"kms_key_id":  true,
 						"tags_all":    true,
@@ -503,13 +502,13 @@ resource_changes = {
 				"force_destroy":        false,
 				"get_password_data":    false,
 				"hibernation":          null,
-				"instance_type":        "t3.micro",
+				"instance_type":        "t3.large",
 				"launch_template":      [],
 				"metadata_options": [
 					{
 						"http_endpoint":      "enabled",
 						"http_protocol_ipv6": "disabled",
-						"http_tokens":        "required",
+						"http_tokens":        "optional",
 					},
 				],
 				"region": "eu-west-1",
@@ -642,16 +641,16 @@ resource_changes = {
 				"ingress": [
 					{
 						"cidr_blocks": [
-							"10.0.0.0/16",
+							"0.0.0.0/0",
 						],
-						"description":      "HTTPS",
-						"from_port":        443,
+						"description":      "All traffic",
+						"from_port":        0,
 						"ipv6_cidr_blocks": [],
 						"prefix_list_ids":  [],
-						"protocol":         "tcp",
+						"protocol":         "-1",
 						"security_groups":  [],
 						"self":             false,
-						"to_port":          443,
+						"to_port":          0,
 					},
 				],
 				"name":                   "sentinel-web-sg",
@@ -716,7 +715,7 @@ resource_changes = {
 			],
 			"after": {
 				"assign_ipv6_address_on_creation":                false,
-				"availability_zone":                              "eu-west-1a",
+				"availability_zone":                              "us-east-1a",
 				"cidr_block":                                     "10.0.1.0/24",
 				"customer_owned_ipv4_pool":                       null,
 				"enable_dns64":                                   false,
@@ -1001,9 +1000,6 @@ raw = {
 								"delete_on_termination": {
 									"constant_value": true,
 								},
-								"encrypted": {
-									"constant_value": true,
-								},
 								"volume_size": {
 									"constant_value": 10,
 								},
@@ -1043,9 +1039,7 @@ raw = {
 							"constant_value": "ami-12345678",
 						},
 						"instance_type": {
-							"references": [
-								"var.instance_type",
-							],
+							"constant_value": "t3.large",
 						},
 						"metadata_options": [
 							{
@@ -1053,7 +1047,7 @@ raw = {
 									"constant_value": "enabled",
 								},
 								"http_tokens": {
-									"constant_value": "required",
+									"constant_value": "optional",
 								},
 							},
 						],
@@ -1124,16 +1118,16 @@ raw = {
 							"constant_value": [
 								{
 									"cidr_blocks": [
-										"10.0.0.0/16",
+										"0.0.0.0/0",
 									],
-									"description":      "HTTPS",
-									"from_port":        443,
+									"description":      "All traffic",
+									"from_port":        0,
 									"ipv6_cidr_blocks": null,
 									"prefix_list_ids":  null,
-									"protocol":         "tcp",
+									"protocol":         "-1",
 									"security_groups":  null,
 									"self":             null,
-									"to_port":          443,
+									"to_port":          0,
 								},
 							],
 						},
@@ -1162,9 +1156,7 @@ raw = {
 					"address": "aws_subnet.main",
 					"expressions": {
 						"availability_zone": {
-							"references": [
-								"var.aws_region",
-							],
+							"constant_value": "us-east-1a",
 						},
 						"cidr_block": {
 							"constant_value": "10.0.1.0/24",
@@ -1374,7 +1366,6 @@ raw = {
 						"root_block_device": [
 							{
 								"delete_on_termination": true,
-								"encrypted":             true,
 								"tags":                  null,
 								"volume_size":           10,
 								"volume_type":           "gp3",
@@ -1439,13 +1430,13 @@ raw = {
 						"force_destroy":        false,
 						"get_password_data":    false,
 						"hibernation":          null,
-						"instance_type":        "t3.micro",
+						"instance_type":        "t3.large",
 						"launch_template":      [],
 						"metadata_options": [
 							{
 								"http_endpoint":      "enabled",
 								"http_protocol_ipv6": "disabled",
-								"http_tokens":        "required",
+								"http_tokens":        "optional",
 							},
 						],
 						"region": "eu-west-1",
@@ -1526,16 +1517,16 @@ raw = {
 						"ingress": [
 							{
 								"cidr_blocks": [
-									"10.0.0.0/16",
+									"0.0.0.0/0",
 								],
-								"description":      "HTTPS",
-								"from_port":        443,
+								"description":      "All traffic",
+								"from_port":        0,
 								"ipv6_cidr_blocks": [],
 								"prefix_list_ids":  [],
-								"protocol":         "tcp",
+								"protocol":         "-1",
 								"security_groups":  [],
 								"self":             false,
-								"to_port":          443,
+								"to_port":          0,
 							},
 						],
 						"name":                   "sentinel-web-sg",
@@ -1567,7 +1558,7 @@ raw = {
 					"type": "aws_subnet",
 					"values": {
 						"assign_ipv6_address_on_creation":                false,
-						"availability_zone":                              "eu-west-1a",
+						"availability_zone":                              "us-east-1a",
 						"cidr_block":                                     "10.0.1.0/24",
 						"customer_owned_ipv4_pool":                       null,
 						"enable_dns64":                                   false,
@@ -1747,7 +1738,6 @@ raw = {
 					"root_block_device": [
 						{
 							"delete_on_termination": true,
-							"encrypted":             true,
 							"tags":                  null,
 							"volume_size":           10,
 							"volume_type":           "gp3",
@@ -1848,6 +1838,7 @@ raw = {
 					"root_block_device": [
 						{
 							"device_name": true,
+							"encrypted":   true,
 							"iops":        true,
 							"kms_key_id":  true,
 							"tags_all":    true,
@@ -1886,13 +1877,13 @@ raw = {
 					"force_destroy":        false,
 					"get_password_data":    false,
 					"hibernation":          null,
-					"instance_type":        "t3.micro",
+					"instance_type":        "t3.large",
 					"launch_template":      [],
 					"metadata_options": [
 						{
 							"http_endpoint":      "enabled",
 							"http_protocol_ipv6": "disabled",
-							"http_tokens":        "required",
+							"http_tokens":        "optional",
 						},
 					],
 					"region": "eu-west-1",
@@ -2052,16 +2043,16 @@ raw = {
 					"ingress": [
 						{
 							"cidr_blocks": [
-								"10.0.0.0/16",
+								"0.0.0.0/0",
 							],
-							"description":      "HTTPS",
-							"from_port":        443,
+							"description":      "All traffic",
+							"from_port":        0,
 							"ipv6_cidr_blocks": [],
 							"prefix_list_ids":  [],
-							"protocol":         "tcp",
+							"protocol":         "-1",
 							"security_groups":  [],
 							"self":             false,
-							"to_port":          443,
+							"to_port":          0,
 						},
 					],
 					"name":                   "sentinel-web-sg",
@@ -2148,7 +2139,7 @@ raw = {
 				],
 				"after": {
 					"assign_ipv6_address_on_creation":                false,
-					"availability_zone":                              "eu-west-1a",
+					"availability_zone":                              "us-east-1a",
 					"cidr_block":                                     "10.0.1.0/24",
 					"customer_owned_ipv4_pool":                       null,
 					"enable_dns64":                                   false,
@@ -2258,7 +2249,7 @@ raw = {
 		},
 	],
 	"terraform_version": "1.17.1",
-	"timestamp":         "2026-11-10T14:16:01Z",
+	"timestamp":         "2026-11-10T15:21:29Z",
 	"variables": {
 		"aws_region": {
 			"value": "eu-west-1",

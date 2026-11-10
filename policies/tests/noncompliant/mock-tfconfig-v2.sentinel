@@ -93,9 +93,6 @@ resources = {
 					"delete_on_termination": {
 						"constant_value": true,
 					},
-					"encrypted": {
-						"constant_value": true,
-					},
 					"volume_size": {
 						"constant_value": 10,
 					},
@@ -139,9 +136,7 @@ resources = {
 				"constant_value": "ami-12345678",
 			},
 			"instance_type": {
-				"references": [
-					"var.instance_type",
-				],
+				"constant_value": "t3.large",
 			},
 			"metadata_options": [
 				{
@@ -149,7 +144,7 @@ resources = {
 						"constant_value": "enabled",
 					},
 					"http_tokens": {
-						"constant_value": "required",
+						"constant_value": "optional",
 					},
 				},
 			],
@@ -224,16 +219,16 @@ resources = {
 				"constant_value": [
 					{
 						"cidr_blocks": [
-							"10.0.0.0/16",
+							"0.0.0.0/0",
 						],
-						"description":      "HTTPS",
-						"from_port":        443,
+						"description":      "All traffic",
+						"from_port":        0,
 						"ipv6_cidr_blocks": null,
 						"prefix_list_ids":  null,
-						"protocol":         "tcp",
+						"protocol":         "-1",
 						"security_groups":  null,
 						"self":             null,
-						"to_port":          443,
+						"to_port":          0,
 					},
 				],
 			},
@@ -266,9 +261,7 @@ resources = {
 		"address": "aws_subnet.main",
 		"config": {
 			"availability_zone": {
-				"references": [
-					"var.aws_region",
-				],
+				"constant_value": "us-east-1a",
 			},
 			"cidr_block": {
 				"constant_value": "10.0.1.0/24",
