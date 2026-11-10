@@ -1,12 +1,12 @@
 mock "tfconfig/v2" {
     module {
-        source = "./tests/compliant/mock-tfconfig-v2.sentinel"
+        source = "./tests/noncompliant/mock-tfconfig-v2.sentinel"
     }
 }
 
 mock "tfplan/v2" {
     module {
-        source = "./tests/compliant/mock-tfplan-v2.sentinel"1
+        source = "./tests/noncompliant/mock-tfplan-v2.sentinel"
     }
 }
 
