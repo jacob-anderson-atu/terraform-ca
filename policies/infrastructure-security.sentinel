@@ -1,10 +1,20 @@
 import "tfplan/v2" as tfplan
 
+# -------------------------------------------------------------
+# Sentinel Policy: Infrastructure Security
+# -------------------------------------------------------------
+
 # Approved EC2 instance types
 approved_instance_types = [
 	"t3.micro",
 	"t3.small",
 ]
+
+public_ipv4_cidr = "0.0.0.0/0"
+
+# -------------------------------------------------------------
+# Resource collections
+# -------------------------------------------------------------
 
 # Find EC2 instances in the plan
 ec2_instances = filter tfplan.resource_changes as _, rc {
@@ -16,6 +26,39 @@ ebs_volumes = filter tfplan.resource_changes as _, rc {
 	rc.type is "aws_ebs_volume" and (rc.change.actions contains "create" or rc.change.actions contains "update")
 }
 
+# Security groups in the plan
+security_groups = filter tfplan.resource_changes as _, rc {
+	rc.type is "aws_security_group" and (rc.change.actions contains "create" or rc.change.actions contains "update")
+}
+
+# -------------------------------------------------------------
+# Functions
+# -------------------------------------------------------------
+
+is_public_ipv4 = func(cidr_blocks) {
+	return cidr_blocks contains public_ipv4_cidr
+}
+
+# Check is a port range permits SSH
+allows_ssh = func(protocol, from_port, to_port) {
+	if protocol is "-1" {
+		return true
+	}
+	if protocol is not "tcp" {
+		return false
+	}
+	return from_port <= 22 and to_port >= 22
+}
+
+# Returns true when a rule permits every protocol publicly
+allows_all_protocols = func(protocol) {
+	return protocol is "-1"
+}
+
+# -------------------------------------------------------------
+# Rules
+# -------------------------------------------------------------
+
 # Check if all EC2 instances are of approved types
 approved_ec2_types = rule {
 	all ec2_instances as _, instance {
@@ -26,23 +69,43 @@ approved_ec2_types = rule {
 # Require IMDSv2 for all EC2 instances
 require_imdsv2 = rule {
 	all ec2_instances as _, instance {
-		instance.change.after.metadata_options is not null and
-			instance.change.after.metadata_options.http_tokens is "required"
+		instance.change.after.metadata_options is not null and instance.change.after.metadata_options.http_tokens is "required"
 	}
 }
 
-# Encrypted EBS volumes for all EC2 instances and standalone EBS volumes
-require_encrypted_ebs = rule {
+# Encrypted EBS volumes for all EC2 instances
+require_encrypted_ec2 = rule {
 	# LocalStack currently has a bug where it does not support the root_block_device attribute, so this rule is temporarily disabled for EC2 instances. It will be re-enabled once the bug is fixed.
-	#all ec2_instances as _, instance {
-	#instance.change.after.root_block_device is not null and
-	#instance.change.after.root_block_device.encrypted is true
-	#}
+	all ec2_instances as _, instance {
+		instance.change.after.root_block_device is not null and instance.change.after.root_block_device.encrypted is true
+	}
+}
+
+# Encrypted EBS volumes for all EBS resources
+require_encrypted_ebs = rule {
 	all ebs_volumes as _, volume {
 		volume.change.after.encrypted is true
 	}
 }
 
+# Check that no security group allows public SSH access
+restrict_public_ssh = rule {
+	all security_groups as _, sg {
+		all sg.change.after.ingress as _, ingress_rule {
+			not (is_public_ipv4(ingress_rule.cidr_blocks) and allows_ssh(ingress_rule.protocol, ingress_rule.from_port, ingress_rule.to_port))
+		}
+	}
+}
+
+# Check that no security group allows all protocols publicly
+restrict_public_all_protocols = rule {
+	all security_groups as _, sg {
+		all sg.change.after.ingress as _, ingress_rule {
+			not (is_public_ipv4(ingress_rule.cidr_blocks) and allows_all_protocols(ingress_rule.protocol))
+		}
+	}
+}
+
 main = rule {
-	approved_ec2_types and require_imdsv2 and require_encrypted_ebs
+	approved_ec2_types and require_imdsv2 and require_encrypted_ec2 and require_encrypted_ebs and restrict_public_ssh and restrict_public_all_protocols
 }
