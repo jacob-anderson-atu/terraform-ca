@@ -86,13 +86,15 @@ resource "aws_instance" "web_01" {
   security_groups = [aws_security_group.web.id]
 
   # LocalStack has a bug where it does not support encrypted root volumes, so the following block is commented out. Uncomment it when using a real AWS environment.
-  #root_block_device {
-    #encrypted   = true
-    #volume_type = "gp3"
-    #volume_size = 10
-  #}
+  root_block_device {
+    encrypted   = true
+    volume_type = "gp3"
+    volume_size = 10
+    delete_on_termination = true
+  }
 
   metadata_options {
+    http_endpoint = "enabled"
     http_tokens = "required"
   }
 
@@ -114,16 +116,18 @@ resource "aws_instance" "web_02" {
   security_groups = [aws_security_group.web.id]
 
   # LocalStack has a bug where it does not support encrypted root volumes, so the following block is commented out. Uncomment it when using a real AWS environment.
-  #root_block_device {
-    #encrypted   = true
-    #volume_type = "gp3"
-    #volume_size = 10
-  #}
+  root_block_device {
+    encrypted   = true
+    volume_type = "gp3"
+    volume_size = 10
+    delete_on_termination = true
+  }
 
   metadata_options {
+    http_endpoint = "enabled"
     http_tokens = "required"
   }
-  
+
   tags = {
     Name        = "sentinel-web-02"
     Environment = var.environment
