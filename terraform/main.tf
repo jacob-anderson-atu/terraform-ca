@@ -92,6 +92,10 @@ resource "aws_instance" "web_01" {
     #volume_size = 10
   #}
 
+  metadata_options {
+    http_tokens = "required"
+  }
+
   tags = {
     Name        = "sentinel-web-01"
     Environment = var.environment
@@ -116,6 +120,10 @@ resource "aws_instance" "web_02" {
     #volume_size = 10
   #}
 
+  metadata_options {
+    http_tokens = "required"
+  }
+  
   tags = {
     Name        = "sentinel-web-02"
     Environment = var.environment
