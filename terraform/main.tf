@@ -80,11 +80,12 @@ resource "aws_security_group" "web" {
 # ------------------------------------------------------------
 
 resource "aws_instance" "web_01" {
-  ami             = "ami-0c55b159cbfafe1f0" # Amazon Linux 2 AMI
+  ami             = "ami-12345678" # LocalStack AMI ID for testing
   instance_type   = var.instance_type
   subnet_id       = aws_subnet.main.id
   security_groups = [aws_security_group.web.id]
 
+  # LocalStack has a bug where it does not support encrypted root volumes, so the following block is commented out. Uncomment it when using a real AWS environment.
   #root_block_device {
     #encrypted   = true
     #volume_type = "gp3"
@@ -103,11 +104,12 @@ resource "aws_instance" "web_01" {
 # ------------------------------------------------------------
 
 resource "aws_instance" "web_02" {
-  ami             = "ami-0c55b159cbfafe1f0" # Amazon Linux 2 AMI
+  ami             = "ami-12345678" # LocalStack AMI ID for testing
   instance_type   = var.instance_type
   subnet_id       = aws_subnet.main.id
   security_groups = [aws_security_group.web.id]
 
+  # LocalStack has a bug where it does not support encrypted root volumes, so the following block is commented out. Uncomment it when using a real AWS environment.
   #root_block_device {
     #encrypted   = true
     #volume_type = "gp3"
