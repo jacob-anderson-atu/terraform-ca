@@ -87,15 +87,15 @@ resource "aws_instance" "web_01" {
 
   # LocalStack has a bug where it does not support encrypted root volumes, so the following block is commented out. Uncomment it when using a real AWS environment.
   root_block_device {
-    encrypted   = true
-    volume_type = "gp3"
-    volume_size = 10
+    encrypted             = true
+    volume_type           = "gp3"
+    volume_size           = 10
     delete_on_termination = true
   }
 
   metadata_options {
     http_endpoint = "enabled"
-    http_tokens = "required"
+    http_tokens   = "required"
   }
 
   tags = {
@@ -117,15 +117,15 @@ resource "aws_instance" "web_02" {
 
   # LocalStack has a bug where it does not support encrypted root volumes, so the following block is commented out. Uncomment it when using a real AWS environment.
   root_block_device {
-    encrypted   = true
-    volume_type = "gp3"
-    volume_size = 10
+    encrypted             = true
+    volume_type           = "gp3"
+    volume_size           = 10
     delete_on_termination = true
   }
 
   metadata_options {
     http_endpoint = "enabled"
-    http_tokens = "required"
+    http_tokens   = "required"
   }
 
   tags = {
