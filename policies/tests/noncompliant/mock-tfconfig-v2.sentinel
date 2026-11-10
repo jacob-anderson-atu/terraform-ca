@@ -1,0 +1,404 @@
+import "strings"
+
+providers = {
+	"aws": {
+		"alias": "",
+		"config": {
+			"access_key": {
+				"constant_value": "test",
+			},
+			"region": {
+				"references": [
+					"var.aws_region",
+				],
+			},
+			"secret_key": {
+				"constant_value": "test",
+			},
+			"skip_credentials_validation": {
+				"constant_value": true,
+			},
+			"skip_metadata_api_check": {
+				"constant_value": true,
+			},
+			"skip_requesting_account_id": {
+				"constant_value": true,
+			},
+		},
+		"full_name":           "registry.terraform.io/hashicorp/aws",
+		"module_address":      "",
+		"name":                "aws",
+		"provider_config_key": "aws",
+		"version_constraint":  "~> 6.0",
+	},
+}
+
+resources = {
+	"aws_ebs_volume.data": {
+		"address": "aws_ebs_volume.data",
+		"config": {
+			"availability_zone": {
+				"references": [
+					"var.aws_region",
+				],
+			},
+			"encrypted": {
+				"constant_value": true,
+			},
+			"size": {
+				"constant_value": 10,
+			},
+			"tags": {
+				"references": [
+					"var.environment",
+				],
+			},
+			"type": {
+				"constant_value": "gp3",
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "data",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_ebs_volume",
+	},
+	"aws_instance.web_01": {
+		"address": "aws_instance.web_01",
+		"config": {
+			"ami": {
+				"constant_value": "ami-12345678",
+			},
+			"instance_type": {
+				"references": [
+					"var.instance_type",
+				],
+			},
+			"metadata_options": [
+				{
+					"http_endpoint": {
+						"constant_value": "enabled",
+					},
+					"http_tokens": {
+						"constant_value": "required",
+					},
+				},
+			],
+			"root_block_device": [
+				{
+					"delete_on_termination": {
+						"constant_value": true,
+					},
+					"volume_size": {
+						"constant_value": 10,
+					},
+					"volume_type": {
+						"constant_value": "gp3",
+					},
+				},
+			],
+			"security_groups": {
+				"references": [
+					"aws_security_group.web.id",
+					"aws_security_group.web",
+				],
+			},
+			"subnet_id": {
+				"references": [
+					"aws_subnet.main.id",
+					"aws_subnet.main",
+				],
+			},
+			"tags": {
+				"references": [
+					"var.environment",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "web_01",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_instance",
+	},
+	"aws_instance.web_02": {
+		"address": "aws_instance.web_02",
+		"config": {
+			"ami": {
+				"constant_value": "ami-12345678",
+			},
+			"instance_type": {
+				"constant_value": "t3.large",
+			},
+			"metadata_options": [
+				{
+					"http_endpoint": {
+						"constant_value": "enabled",
+					},
+					"http_tokens": {
+						"constant_value": "optional",
+					},
+				},
+			],
+			"root_block_device": [
+				{
+					"delete_on_termination": {
+						"constant_value": true,
+					},
+					"encrypted": {
+						"constant_value": true,
+					},
+					"volume_size": {
+						"constant_value": 10,
+					},
+					"volume_type": {
+						"constant_value": "gp3",
+					},
+				},
+			],
+			"security_groups": {
+				"references": [
+					"aws_security_group.web.id",
+					"aws_security_group.web",
+				],
+			},
+			"subnet_id": {
+				"references": [
+					"aws_subnet.main.id",
+					"aws_subnet.main",
+				],
+			},
+			"tags": {
+				"references": [
+					"var.environment",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "web_02",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_instance",
+	},
+	"aws_security_group.web": {
+		"address": "aws_security_group.web",
+		"config": {
+			"description": {
+				"constant_value": "Security group for Sentinel test",
+			},
+			"egress": {
+				"constant_value": [
+					{
+						"cidr_blocks": [
+							"0.0.0.0/0",
+						],
+						"description":      "All traffic",
+						"from_port":        0,
+						"ipv6_cidr_blocks": null,
+						"prefix_list_ids":  null,
+						"protocol":         "-1",
+						"security_groups":  null,
+						"self":             null,
+						"to_port":          0,
+					},
+				],
+			},
+			"ingress": {
+				"constant_value": [
+					{
+						"cidr_blocks": [
+							"0.0.0.0/0",
+						],
+						"description":      "All traffic",
+						"from_port":        0,
+						"ipv6_cidr_blocks": null,
+						"prefix_list_ids":  null,
+						"protocol":         "-1",
+						"security_groups":  null,
+						"self":             null,
+						"to_port":          0,
+					},
+				],
+			},
+			"name": {
+				"constant_value": "sentinel-web-sg",
+			},
+			"tags": {
+				"references": [
+					"var.environment",
+				],
+			},
+			"vpc_id": {
+				"references": [
+					"aws_vpc.main.id",
+					"aws_vpc.main",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "web",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_security_group",
+	},
+	"aws_subnet.main": {
+		"address": "aws_subnet.main",
+		"config": {
+			"availability_zone": {
+				"constant_value": "us-east-1a",
+			},
+			"cidr_block": {
+				"constant_value": "10.0.1.0/24",
+			},
+			"tags": {
+				"references": [
+					"var.environment",
+				],
+			},
+			"vpc_id": {
+				"references": [
+					"aws_vpc.main.id",
+					"aws_vpc.main",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "main",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_subnet",
+	},
+	"aws_vpc.main": {
+		"address": "aws_vpc.main",
+		"config": {
+			"cidr_block": {
+				"constant_value": "10.0.0.0/16",
+			},
+			"tags": {
+				"references": [
+					"var.environment",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "main",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_vpc",
+	},
+}
+
+provisioners = {}
+
+variables = {
+	"aws_region": {
+		"default":        "eu-west-1",
+		"description":    "The AWS region to deploy resources in.",
+		"module_address": "",
+		"name":           "aws_region",
+	},
+	"environment": {
+		"default":        "dev",
+		"description":    "Environment tag applied to resources",
+		"module_address": "",
+		"name":           "environment",
+	},
+	"instance_type": {
+		"default":        "t3.micro",
+		"description":    "The type of EC2 instance to launch.",
+		"module_address": "",
+		"name":           "instance_type",
+	},
+}
+
+outputs = {
+	"ebs_volume_id": {
+		"depends_on":     [],
+		"description":    "",
+		"module_address": "",
+		"name":           "ebs_volume_id",
+		"sensitive":      false,
+		"value": {
+			"references": [
+				"aws_ebs_volume.data.id",
+				"aws_ebs_volume.data",
+			],
+		},
+	},
+	"instance_ids": {
+		"depends_on":     [],
+		"description":    "",
+		"module_address": "",
+		"name":           "instance_ids",
+		"sensitive":      false,
+		"value": {
+			"references": [
+				"aws_instance.web_01.id",
+				"aws_instance.web_01",
+				"aws_instance.web_02.id",
+				"aws_instance.web_02",
+			],
+		},
+	},
+	"security_group_id": {
+		"depends_on":     [],
+		"description":    "",
+		"module_address": "",
+		"name":           "security_group_id",
+		"sensitive":      false,
+		"value": {
+			"references": [
+				"aws_security_group.web.id",
+				"aws_security_group.web",
+			],
+		},
+	},
+	"vpc_id": {
+		"depends_on":     [],
+		"description":    "",
+		"module_address": "",
+		"name":           "vpc_id",
+		"sensitive":      false,
+		"value": {
+			"references": [
+				"aws_vpc.main.id",
+				"aws_vpc.main",
+			],
+		},
+	},
+}
+
+module_calls = {}
+
+strip_index = func(addr) {
+	s = strings.split(addr, ".")
+	for s as i, v {
+		s[i] = strings.split(v, "[")[0]
+	}
+
+	return strings.join(s, ".")
+}
