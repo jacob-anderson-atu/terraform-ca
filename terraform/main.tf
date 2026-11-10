@@ -45,8 +45,8 @@ resource "aws_vpc" "main" {
 resource "aws_subnet" "main" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.1.0/24"
-  #availability_zone = "${var.aws_region}a"
-  availability_zone = "us-east-1a" # non-compliant az
+  availability_zone = "${var.aws_region}a"
+  #availability_zone = "us-east-1a" # non-compliant az
 
   tags = {
     Name        = "sentinel-test-subnet"
@@ -64,20 +64,20 @@ resource "aws_security_group" "web" {
   description = "Security group for Sentinel test"
   vpc_id      = aws_vpc.main.id
 
-  /*ingress {
+  ingress {
     description = "HTTPS"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["10.0.0.0/16"]
-  }*/
-  ingress { # non-compliant rule allowing all traffic
+  }
+  /*ingress { # non-compliant rule allowing all traffic
     description = "All traffic"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
-  }
+  }*/
 
   egress {
     description = "All traffic"
@@ -106,7 +106,7 @@ resource "aws_instance" "web_01" {
 
   # LocalStack has a bug where it does not support encrypted root volumes, so the following block is commented out. Uncomment it when using a real AWS environment.
   root_block_device {
-    #encrypted             = true
+    encrypted             = true
     volume_type           = "gp3"
     volume_size           = 10
     delete_on_termination = true
@@ -130,8 +130,8 @@ resource "aws_instance" "web_01" {
 
 resource "aws_instance" "web_02" {
   ami             = "ami-12345678" # LocalStack AMI ID for testing
-  #instance_type   = var.instance_type
-  instance_type   = "t3.large" # non-compliant instance type
+  instance_type   = var.instance_type
+  #instance_type   = "t3.large" # non-compliant instance type
   subnet_id       = aws_subnet.main.id
   security_groups = [aws_security_group.web.id]
 
@@ -145,8 +145,8 @@ resource "aws_instance" "web_02" {
 
   metadata_options {
     http_endpoint = "enabled"
-    #http_tokens   = "required"
-    http_tokens   = "optional" # non-compliant metadata option
+    http_tokens   = "required"
+    #http_tokens   = "optional" # non-compliant metadata option
   }
 
   tags = {
