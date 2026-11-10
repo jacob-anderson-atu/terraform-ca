@@ -1,0 +1,83 @@
+import "tfconfig/v2" as tfconfig
+import "tfplan/v2" as tfplan
+import "strings"
+
+# ---------------------------------------
+# Policy: Digital Sovereignty
+# ---------------------------------------
+
+# eu-west-1 is the AWS region for Ireland
+approved_regions = ["eu-west-1"]
+
+# ---------------------------------------
+# Provider configuration
+# ---------------------------------------
+
+aws_providers = filter tfconfig.providers as _, provider {
+	provider.name is "aws"
+}
+
+# Every AWS provider must be configured to use an approved region
+approved_aws_provider_regions = rule {
+	all aws_providers as _, provider {
+		provider.region in approved_regions
+	}
+}
+
+# ---------------------------------------
+# Resource collections
+# ---------------------------------------
+
+planned_changes = filter tfplan.resource_changes as _, rc {
+	rc.mode is "managed" and (rc.change.actions contains "create" or rc.change.actions contains "update")
+}
+
+ec2_instances = filter planned_changes as _, rc {
+	rc.type is "aws_instance"
+}
+
+ebs_volumes = filter planned_changes as _, rc {
+	rc.type is "aws_ebs_volume"
+}
+
+subnets = filter planned_changes as _, rc {
+	rc.type is "aws_subnet"
+}
+
+# ---------------------------------------
+# Functions
+# ---------------------------------------
+
+# checks if the availability zone is approved for digital sovereignty
+availability_zone_is_approved = func(az) {
+	return strings.has_prefix(az, "eu-west-1")
+}
+
+# ---------------------------------------
+# Rules
+# ---------------------------------------
+
+# Every EC2 instance must be in an approved availability zone
+ec2_instances_in_approved_az = rule {
+	all ec2_instances as _, instance {
+		instance.change.after.availability_zone is null or availability_zone_is_approved(instance.change.after.availability_zone)
+	}
+}
+
+# Every EBS volume must be in an approved availability zone
+ebs_volumes_in_approved_az = rule {
+	all ebs_volumes as _, volume {
+		volume.change.after.availability_zone is null or availability_zone_is_approved(volume.change.after.availability_zone)
+	}
+}
+
+# Every subnet must be in an approved availability zone
+subnets_in_approved_az = rule {
+	all subnets as _, subnet {
+		subnet.change.after.availability_zone is null or availability_zone_is_approved(subnet.change.after.availability_zone)
+	}
+}
+
+main = rule {
+	approved_aws_provider_regions and ec2_instances_in_approved_az and ebs_volumes_in_approved_az and subnets_in_approved_az
+}
