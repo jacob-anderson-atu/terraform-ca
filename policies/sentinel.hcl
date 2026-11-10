@@ -1,3 +1,15 @@
+mock "tfconfig/v2" {
+    module {
+        source = "./tests/compliant/mock-tfconfig-v2.sentinel"
+    }
+}
+
+mock "tfplan/v2" {
+    module {
+        source = "./tests/compliant/mock-tfplan-v2.sentinel"1
+    }
+}
+
 policy "infrastructure-security" {
     source = "./infrastructure-security.sentinel"
     enforcement_level = "hard-mandatory"
@@ -9,12 +21,6 @@ policy "supply-chain-security" {
 }
 
 policy "digital-sovereignty" {
-    source "./digital-sovereignty.sentinel"`
+    source = "./digital-sovereignty.sentinel"
     enforcement_level = "hard-mandatory"
-}
-
-mock "tfplan/v2" {
-    module{
-        source = "./tests/mock-tfplan-v2.sentinel"
-    }
 }

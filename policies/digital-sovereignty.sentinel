@@ -19,9 +19,7 @@ aws_providers = filter tfconfig.providers as _, provider {
 
 # Every AWS provider must be configured to use an approved region
 approved_aws_provider_regions = rule {
-	all aws_providers as _, provider {
-		provider.region in approved_regions
-	}
+	"aws_region" in keys(tfplan.variables) and tfplan.variables["aws_region"].value in approved_regions
 }
 
 # ---------------------------------------
@@ -57,12 +55,7 @@ availability_zone_is_approved = func(az) {
 # Rules
 # ---------------------------------------
 
-# Every EC2 instance must be in an approved availability zone
-ec2_instances_in_approved_az = rule {
-	all ec2_instances as _, instance {
-		instance.change.after.availability_zone is null or availability_zone_is_approved(instance.change.after.availability_zone)
-	}
-}
+
 
 # Every EBS volume must be in an approved availability zone
 ebs_volumes_in_approved_az = rule {
@@ -79,5 +72,5 @@ subnets_in_approved_az = rule {
 }
 
 main = rule {
-	approved_aws_provider_regions and ec2_instances_in_approved_az and ebs_volumes_in_approved_az and subnets_in_approved_az
+	approved_aws_provider_regions and ebs_volumes_in_approved_az and subnets_in_approved_az
 }

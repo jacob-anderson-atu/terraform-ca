@@ -1,3 +1,14 @@
+terraform {
+  required_version = "1.17.1"
+
+  cloud {
+    organization = "jacob-anderson-atu"
+    workspaces {
+      name = "test-space"
+    }
+  }
+}
+
 provider "aws" {
   region     = var.aws_region
   access_key = "test"
@@ -7,11 +18,11 @@ provider "aws" {
   skip_metadata_api_check     = true
   skip_requesting_account_id  = true
 
-  endpoints {
+  /*endpoints { #LocalStack endpoints for testing
     ec2 = "http://localhost:4566"
     s3  = "http://localhost:4566"
     sts = "http://localhost:4566"
-  }
+  }*/
 }
 
 # ------------------------------------------------------------
@@ -35,6 +46,7 @@ resource "aws_subnet" "main" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.1.0/24"
   availability_zone = "${var.aws_region}a"
+  #availability_zone = "us-east-1a" # non-compliant az
 
   tags = {
     Name        = "sentinel-test-subnet"
@@ -59,6 +71,13 @@ resource "aws_security_group" "web" {
     protocol    = "tcp"
     cidr_blocks = ["10.0.0.0/16"]
   }
+  /*ingress { # non-compliant rule allowing all traffic
+    description = "All traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }*/
 
   egress {
     description = "All traffic"
@@ -112,6 +131,7 @@ resource "aws_instance" "web_01" {
 resource "aws_instance" "web_02" {
   ami             = "ami-12345678" # LocalStack AMI ID for testing
   instance_type   = var.instance_type
+  #instance_type   = "t3.large" # non-compliant instance type
   subnet_id       = aws_subnet.main.id
   security_groups = [aws_security_group.web.id]
 

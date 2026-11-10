@@ -1,0 +1,22 @@
+{
+	"records": [
+		{
+			"key": "supply-chain-security",
+			"source": "./supply-chain-security.sentinel",
+			"sourceSum": "",
+			"dest": "/home/jacob/ATU/terraform-ca/terraform-ca/policies/supply-chain-security.sentinel"
+		},
+		{
+			"key": "digital-sovereignty",
+			"source": "./digital-sovereignty.sentinel",
+			"sourceSum": "",
+			"dest": "/home/jacob/ATU/terraform-ca/terraform-ca/policies/digital-sovereignty.sentinel"
+		},
+		{
+			"key": "infrastructure-security",
+			"source": "./infrastructure-security.sentinel",
+			"sourceSum": "",
+			"dest": "/home/jacob/ATU/terraform-ca/terraform-ca/policies/infrastructure-security.sentinel"
+		}
+	]
+}

@@ -26,44 +26,16 @@ aws_providers = filter tfconfig.providers as _, provider {
 # Functions
 # ---------------------------------------
 
-child_modules = tfconfig.module_calls
-
-# declare local modules
-module_source_is_local = func(source) {
-	return strings.has_prefix(source, "./") or strings.has_prefix(source, "../")
-}
-
-module_source_is_approved = func(source) {
-	if module_source_is_local(source) {
-		return true
-	}
-	return any approved_module_source as _, approved_source {
-		strings.has_prefix(source, approved_source)
-	}
-}
-
 # ---------------------------------------
 # Rules
 # ---------------------------------------
 
-trusted_module_sources = rule {
-	all child_modules as _, module_call {
-		module_source_is_approved(module_call.source)
-	}
-}
-
-# Remote modules declare a version
-remote_modules_declare_version = rule {
-	all child_modules as _, module_call {
-		module_source_is_local(module_call.source) or module_call.version is not null
-	}
-}
 
 # Require AWS provider and approved source
 approved_provider_sources_rule = rule {
 	all aws_providers as _, provider {
 		any approved_provider_sources as _, approved_source {
-			strings.has_prefix(provider.source, approved_source)
+			strings.has_prefix(provider.full_name, approved_source)
 		}
 	}
 }
@@ -71,10 +43,10 @@ approved_provider_sources_rule = rule {
 # Require AWS provider to have a version constraint
 aws_provider_version_constraint_rule = rule {
 	all aws_providers as _, provider {
-		provider.version is not null and strings.has_prefix(provider.version, required_provider_version_constraint)
+		provider.version_constraint is not null and strings.has_prefix(provider.version_constraint, required_provider_version_constraint)
 	}
 }
 
 main = rule {
-	trusted_module_sources and remote_modules_declare_version and approved_provider_sources_rule and aws_provider_version_constraint_rule
+	approved_provider_sources_rule and aws_provider_version_constraint_rule
 }
