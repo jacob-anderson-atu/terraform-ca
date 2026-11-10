@@ -9,7 +9,7 @@ import "strings"
 approved_provider_sources = ["registry.terraform.io/hashicorp/aws"]
 
 # Require AWS provider to have a version constraint to avoid using untrusted versions.
-required_provider_version_constraint = "~> 5.0"
+required_provider_version_constraint = "~> 6."
 
 # Trusted remote module source
 approved_module_source = ["app.terraform.io/"]
